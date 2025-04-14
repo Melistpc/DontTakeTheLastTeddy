@@ -13,6 +13,7 @@ public class DontTakeTheLastTeddy : MonoBehaviour, ITakeTurnInvoker, IGameOverIn
     Board board;
     Player player1;
     Player player2;
+    
 
 	// multiple games support
     Timer newGameDelayTimer;

@@ -22,7 +22,9 @@ public class Player : MonoBehaviour, ITurnOverInvoker
     // saved for efficiency
     LinkedList<MinimaxTreeNode<Configuration>> nodeList =
         new LinkedList<MinimaxTreeNode<Configuration>>();
+
     List<int> binContents = new List<int>();
+
     List<Configuration> newConfigurations =
         new List<Configuration>();
 
@@ -59,14 +61,14 @@ public class Player : MonoBehaviour, ITurnOverInvoker
     //}
 
     #endregion
-	
+
     /// <summary>
     /// Awake is called before Start
     /// </summary>
     void Awake()
-	{
+    {
         // set name
-		if (CompareTag("Player1"))
+        if (CompareTag("Player1"))
         {
             myName = PlayerName.Player1;
         }
@@ -83,7 +85,7 @@ public class Player : MonoBehaviour, ITurnOverInvoker
         // register as invoker and listener
         EventManager.AddTurnOverInvoker(this);
         EventManager.AddTakeTurnListener(HandleTakeTurnEvent);
-	}
+    }
 
     /// <summary>
     /// Gets and sets the difficulty for the player
@@ -160,15 +162,18 @@ public class Player : MonoBehaviour, ITurnOverInvoker
                 GetNextConfigurations(currentNode.Value);
             foreach (Configuration child in children)
             {
+                if (FindDepth(currentNode) <= searchDepth)
+                {
+                    MinimaxTreeNode<Configuration> childNode =
+                        new MinimaxTreeNode<Configuration>(
+                            child, currentNode);
+                    tree.AddNode(childNode);
+                    nodeList.AddLast(childNode);
+                }
                 // STUDENTS: only add to tree if within search depth
-
-                MinimaxTreeNode<Configuration> childNode =
-                    new MinimaxTreeNode<Configuration>(
-                        child, currentNode);
-                tree.AddNode(childNode);
-                nodeList.AddLast(childNode);
             }
         }
+
         return tree;
     }
 
@@ -225,6 +230,7 @@ public class Player : MonoBehaviour, ITurnOverInvoker
                     new Configuration(binContents));
             }
         }
+
         return newConfigurations;
     }
 
@@ -284,6 +290,20 @@ public class Player : MonoBehaviour, ITurnOverInvoker
         }
     }
 
+    private int FindDepth(MinimaxTreeNode<Configuration> currentNode) //melis
+    {
+        int depth = 0;
+        while (currentNode.Parent != null)
+        {
+            depth++;
+
+            currentNode = currentNode.Parent;
+        }
+
+        return depth;
+    }
+
+
     /// <summary>
     /// Assigns the end of game minimax score
     /// </summary>
@@ -303,7 +323,7 @@ public class Player : MonoBehaviour, ITurnOverInvoker
             node.MinimaxScore = 0;
         }
     }
-        
+
     /// <summary>
     /// Assigns a heuristic minimax score to the given node
     /// </summary>
@@ -318,10 +338,19 @@ public class Player : MonoBehaviour, ITurnOverInvoker
         {
             AssignEndOfGameMinimaxScore(node, maximizing);
         }
+
+        else if (node.Value.NumBears < 10 && node.Value.NonEmptyBins.Count <= 2)
+        {
+            node.MinimaxScore = 1f;
+        }
+        else if (node.Value.NumBears >= 10 && node.Value.NonEmptyBins.Count > 2)
+        {
+            node.MinimaxScore = 2f;
+        }
         else
         {
             // use a heuristic evaluation function to score the node
             node.MinimaxScore = 0.5f;
-		}
+        }
     }
 }
