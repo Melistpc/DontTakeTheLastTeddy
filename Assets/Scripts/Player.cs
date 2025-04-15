@@ -162,7 +162,7 @@ public class Player : MonoBehaviour, ITurnOverInvoker
                 GetNextConfigurations(currentNode.Value);
             foreach (Configuration child in children)
             {
-                if (FindDepth(currentNode) <= searchDepth)
+                if (FindDepth(currentNode) < searchDepth)
                 {
                     MinimaxTreeNode<Configuration> childNode =
                         new MinimaxTreeNode<Configuration>(

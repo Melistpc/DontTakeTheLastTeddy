@@ -66,7 +66,7 @@ public class DontTakeTheLastTeddy : MonoBehaviour, ITakeTurnInvoker, IGameOverIn
 		
         // set up timer for delay between games
         newGameDelayTimer = gameObject.AddComponent<Timer>();
-        newGameDelayTimer.Duration = 1;
+        newGameDelayTimer.Duration = 0.01f; //1 di bunla değiştirdim
         newGameDelayTimer.AddTimerFinishedListener(HandleTimerFinishedEvent);
 
         // initialize statistics class
@@ -185,7 +185,7 @@ public class DontTakeTheLastTeddy : MonoBehaviour, ITakeTurnInvoker, IGameOverIn
                 {
                     // uncomment the line below and implement a
                     // SetPlayerDifficulties method
-                    //SetPlayerDifficulties(gamesPlayed);
+                    SetPlayerDifficulties(gamesPlayed);
                 }
 
                 gamesPlayed++;
@@ -208,5 +208,11 @@ public class DontTakeTheLastTeddy : MonoBehaviour, ITakeTurnInvoker, IGameOverIn
                 SceneManager.LoadScene("statistics");
             }
         }
+    }
+
+    private void SetPlayerDifficulties(int i)
+    {
+        Debug.Log("What am I doing?");
+           
     }
 }
